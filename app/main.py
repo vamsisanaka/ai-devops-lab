@@ -4,13 +4,16 @@ app = Flask(__name__)
 
 tasks = []
 
+
 @app.route("/health", methods=["GET"])
 def health():
     return jsonify({"status": "ok", "version": "1.0.0"})
 
+
 @app.route("/tasks", methods=["GET"])
 def get_tasks():
     return jsonify({"tasks": tasks, "count": len(tasks)})
+
 
 @app.route("/tasks", methods=["POST"])
 def create_task():
@@ -21,6 +24,7 @@ def create_task():
     tasks.append(task)
     return jsonify(task), 201
 
+
 @app.route("/tasks/<int:task_id>", methods=["PUT"])
 def update_task(task_id):
     task = next((t for t in tasks if t["id"] == task_id), None)
@@ -29,6 +33,7 @@ def update_task(task_id):
     task["done"] = request.get_json().get("done", task["done"])
     return jsonify(task)
 
+
 @app.route("/tasks/<int:task_id>", methods=["DELETE"])
 def delete_task(task_id):
     task = next((t for t in tasks if t["id"] == task_id), None)
@@ -36,6 +41,7 @@ def delete_task(task_id):
         return jsonify({"error": "task not found"}), 404
     tasks.remove(task)
     return jsonify({"message": "task deleted"}), 200
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

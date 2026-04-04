@@ -1,5 +1,6 @@
 import pytest
-from app.main import app, tasks
+from app.main import app, tasks  # noqa: F401
+
 
 @pytest.fixture
 def client():
@@ -10,6 +11,7 @@ def client():
     with app.test_client() as client:
         yield client
 
+
 def test_health(client):
     res = client.get("/health")
     assert res.status_code == 200
@@ -17,12 +19,14 @@ def test_health(client):
     assert data["status"] == "ok"
     assert "version" in data
 
+
 def test_get_tasks_empty(client):
     res = client.get("/tasks")
     assert res.status_code == 200
     data = res.get_json()
     assert data["tasks"] == []
     assert data["count"] == 0
+
 
 def test_get_tasks_with_data(client):
     # First create a task
@@ -34,7 +38,8 @@ def test_get_tasks_with_data(client):
     assert data["count"] == 1
     assert data["tasks"][0]["title"] == "Test Task"
     assert data["tasks"][0]["id"] == 1
-    assert data["tasks"][0]["done"] == False
+    assert data["tasks"][0]["done"] is False
+
 
 def test_create_task_success(client):
     res = client.post("/tasks", json={"title": "Learn AI DevOps"})
@@ -42,7 +47,8 @@ def test_create_task_success(client):
     data = res.get_json()
     assert data["title"] == "Learn AI DevOps"
     assert data["id"] == 1
-    assert data["done"] == False
+    assert data["done"] is False
+
 
 def test_create_task_missing_title(client):
     res = client.post("/tasks", json={})
@@ -51,9 +57,13 @@ def test_create_task_missing_title(client):
     assert "error" in data
     assert "title is required" in data["error"]
 
+
 def test_create_task_no_json(client):
     res = client.post("/tasks")
-    assert res.status_code == 415  # Flask returns 415 for unsupported media type when no JSON body
+    assert (
+        res.status_code == 415
+    )  # Flask returns 415 for unsupported media type when no JSON body
+
 
 def test_update_task_success(client):
     # Create a task first
@@ -63,7 +73,8 @@ def test_update_task_success(client):
     data = res.get_json()
     assert data["id"] == 1
     assert data["title"] == "Test Task"
-    assert data["done"] == True
+    assert data["done"] is True
+
 
 def test_update_task_not_found(client):
     res = client.put("/tasks/999", json={"done": True})
@@ -72,11 +83,13 @@ def test_update_task_not_found(client):
     assert "error" in data
     assert "task not found" in data["error"]
 
+
 def test_update_task_no_json(client):
     # Create a task first
     client.post("/tasks", json={"title": "Test Task"})
     res = client.put("/tasks/1")  # No JSON body
     assert res.status_code == 415  # Flask returns 415 for no body
+
 
 def test_delete_task_success(client):
     # Create a task first
@@ -90,12 +103,14 @@ def test_delete_task_success(client):
     res2 = client.get("/tasks")
     assert res2.get_json()["count"] == 0
 
+
 def test_delete_task_not_found(client):
     res = client.delete("/tasks/999")
     assert res.status_code == 404
     data = res.get_json()
     assert "error" in data
     assert "task not found" in data["error"]
+
 
 def test_delete_task_invalid_id(client):
     res = client.delete("/tasks/abc")
