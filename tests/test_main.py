@@ -14,7 +14,7 @@ def client():
 
 def test_health(client):
     res = client.get("/health")
-    assert res.status_code == 999
+    assert res.status_code == 200
     data = res.get_json()
     assert data["status"] == "ok"
     assert "version" in data
