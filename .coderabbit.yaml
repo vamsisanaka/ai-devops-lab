@@ -1,0 +1,39 @@
+language: "en-US"
+
+reviews:
+  profile: "chill"
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+
+  path_instructions:
+    - path: "app/**"
+      instructions: |
+        Review this Flask API code for:
+        - Proper HTTP status codes
+        - Input validation and error handling
+        - Security issues like injection vulnerabilities
+        - Missing edge cases
+
+    - path: "tests/**"
+      instructions: |
+        Review tests for:
+        - Coverage of edge cases and error paths
+        - Test isolation — no test should depend on another
+        - Clear assertion messages
+
+    - path: ".github/workflows/**"
+      instructions: |
+        Review CI/CD pipeline for:
+        - Security best practices
+        - Inefficient steps that slow the pipeline
+        - Missing error handling
+
+  tools:
+    ruff:
+      enabled: true
+
+chat:
+  auto_reply: true
