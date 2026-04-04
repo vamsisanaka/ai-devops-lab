@@ -29,11 +29,13 @@ def update_task(task_id):
     task["done"] = request.get_json().get("done", task["done"])
     return jsonify(task)
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
-
 @app.route("/tasks/<int:task_id>", methods=["DELETE"])
 def delete_task(task_id):
-    global tasks
-    tasks = [t for t in tasks if t["id"] != task_id]
-    return jsonify({"message": "task deleted"})
+    task = next((t for t in tasks if t["id"] == task_id), None)
+    if not task:
+        return jsonify({"error": "task not found"}), 404
+    tasks.remove(task)
+    return jsonify({"message": "task deleted"}), 200
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
