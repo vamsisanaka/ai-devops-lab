@@ -39,6 +39,7 @@ def test_get_tasks_with_data(client):
     assert data["tasks"][0]["title"] == "Test Task"
     assert data["tasks"][0]["id"] == 1
     assert data["tasks"][0]["done"] is False
+    assert data["tasks"][0]["priority"] == "medium"
 
 
 def test_create_task_success(client):
@@ -48,6 +49,25 @@ def test_create_task_success(client):
     assert data["title"] == "Learn AI DevOps"
     assert data["id"] == 1
     assert data["done"] is False
+    assert data["priority"] == "medium"  # default priority
+
+
+def test_create_task_with_priority(client):
+    res = client.post(
+        "/tasks", json={"title": "High Priority Task", "priority": "high"}
+    )
+    assert res.status_code == 201
+    data = res.get_json()
+    assert data["title"] == "High Priority Task"
+    assert data["priority"] == "high"
+
+
+def test_create_task_invalid_priority(client):
+    res = client.post("/tasks", json={"title": "Task", "priority": "urgent"})
+    assert res.status_code == 400
+    data = res.get_json()
+    assert "error" in data
+    assert "priority must be one of" in data["error"]
 
 
 def test_create_task_missing_title(client):

@@ -4,6 +4,8 @@ app = Flask(__name__)
 
 tasks = []
 
+VALID_PRIORITIES = ["low", "medium", "high"]
+
 
 @app.route("/health", methods=["GET"])
 def health():
@@ -20,7 +22,15 @@ def create_task():
     data = request.get_json()
     if not data or "title" not in data:
         return jsonify({"error": "title is required"}), 400
-    task = {"id": len(tasks) + 1, "title": data["title"], "done": False}
+    priority = data.get("priority", "medium")
+    if priority not in VALID_PRIORITIES:
+        return jsonify({"error": f"priority must be one of {VALID_PRIORITIES}"}), 400
+    task = {
+        "id": len(tasks) + 1,
+        "title": data["title"],
+        "done": False,
+        "priority": priority,
+    }
     tasks.append(task)
     return jsonify(task), 201
 
