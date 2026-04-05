@@ -19,6 +19,8 @@ packaging==26.0
 platformdirs==4.9.4
 pluggy==1.6.0
 pre_commit==4.5.1
+prometheus_client==0.24.1
+prometheus_flask_exporter==0.23.2
 Pygments==2.20.0
 pytest==9.0.2
 pytest-cov==7.1.0
