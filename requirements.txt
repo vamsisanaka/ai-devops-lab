@@ -27,7 +27,7 @@ pytest-cov==7.1.0
 python-discovery==1.2.1
 PyYAML==6.0.3
 requests==2.33.1
-ruff==0.15.9
+ruff==0.15.10
 tomli==2.4.1
 typing_extensions==4.15.0
 urllib3==2.6.3
